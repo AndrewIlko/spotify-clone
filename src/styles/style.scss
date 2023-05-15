@@ -105,3 +105,38 @@ body,
     flex-direction: column;
   }
 }
+
+// .hero-bg {
+//   background: linear-gradient(transparent, rgb(0, 0, 0, 0.975)),
+//     url("https://images2.alphacoders.com/870/870886.jpg");
+//   background-position: center;
+//   filter: brightness(0.55);
+// }
+
+.grid-auto-1fr {
+  grid-template-columns: auto 1fr;
+}
+
+.navItem-hover {
+  color: #b3b3b3;
+  transition: all 0.3s ease-in-out;
+
+  svg {
+    transition: all 0.3s ease-in-out;
+    fill: #b3b3b3;
+  }
+
+  &:hover {
+    color: #fff;
+    svg {
+      fill: #fff;
+    }
+  }
+
+  &--active {
+    color: white;
+    svg {
+      fill: white;
+    }
+  }
+}
