@@ -69,8 +69,8 @@ const Library = () => {
   return (
     <>
       <div className="flex flex-col bg-[rgb(18,18,18)] rounded-[8px] flex-1 w-full">
-        <div className="flex justify-between items-center">
-          <div className="flex flex-1 gap-[12px] navItem-hover px-[16px] py-[8px] cursor-pointer">
+        <div className="flex px-[16px] py-[8px] justify-between items-center">
+          <div className="flex gap-[12px] cursor-pointer px-[8px] py-[4px] navItem-hover">
             <LibraryIcon />
             <span className="text-[16px] font-[700]">Your Library</span>
           </div>

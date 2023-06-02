@@ -13,12 +13,15 @@ const App = () => {
     <>
       <Provider store={store}>
         <MainWrapper>
-          <div className="flex-1 grid grid-auto-1fr gap-[8px] p-[8px]">
-            <SideNavigation />
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/search" element={<Home />} />
-            </Routes>
+          <div className="flex flex-col gap-[8px]">
+            <div className="flex-1 grid grid-auto-1fr gap-[8px] p-[8px]">
+              <SideNavigation />
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/search" element={<Home />} />
+              </Routes>
+            </div>
+            <PlayerControls />
           </div>
         </MainWrapper>
       </Provider>

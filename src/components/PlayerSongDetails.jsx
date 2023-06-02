@@ -2,8 +2,6 @@ import { Paper } from "@mui/material";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import React, { useState } from "react";
 
-
-
 const PlayerSongDetails = () => {
   const [img, setImg] = useState(
     "https://i.scdn.co/image/ab67616d0000485188367cde4312ea2b32225e1b"
