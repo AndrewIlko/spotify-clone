@@ -40,7 +40,7 @@ const NavigationBar = () => {
 
   return (
     <>
-      <nav className="px-[12px] py-[8px] bg-[rgb(18,18,18)] rounded-[8px]">
+      <nav className="px-[12px] py-[8px] bg-[rgb(18,18,18,0.85)] rounded-[8px]">
         <ul className="flex flex-col">
           {navItems.map((navItem) => {
             const { link, title, icon } = navItem;
@@ -68,7 +68,7 @@ const Library = () => {
   const likedSongs = [];
   return (
     <>
-      <div className="flex flex-col bg-[rgb(18,18,18)] rounded-[8px] flex-1 w-full">
+      <div className="flex flex-col bg-[rgb(18,18,18,0.85)] rounded-[8px] flex-1 w-full">
         <div className="flex px-[16px] py-[8px] justify-between items-center">
           <div className="flex gap-[12px] cursor-pointer px-[8px] py-[4px] navItem-hover">
             <LibraryIcon />

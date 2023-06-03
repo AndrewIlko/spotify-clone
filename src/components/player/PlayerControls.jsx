@@ -10,37 +10,38 @@ import SkipNextRoundedIcon from "@mui/icons-material/SkipNextRounded";
 import RepeatRoundedIcon from "@mui/icons-material/RepeatRounded";
 import RepeatOneRoundedIcon from "@mui/icons-material/RepeatOneRounded";
 
-import { volumeSvg } from "../../svg/svgs";
 import PlayerSongDetails from "../PlayerSongDetails";
+import { useDispatch, useSelector } from "react-redux";
+import { globalActions } from "../../redux/store/features/globalSlice";
+import VolumeSettings from "./VolumeSettings";
+import Timer from "./Timer";
 
 const PlayerControls = () => {
-  const [volume, setVolume] = useState(0.25);
+  const { volume, isMuted, selectedSong, isPlaying, repeat } = useSelector(
+    (state) => state.global
+  );
+  console.log(repeat);
+
+  const { setVolume, setIsMuted, setIsPlaying, setRepeat } = globalActions;
+  const dispatch = useDispatch();
+
   const [currentTime, setCurrentTime] = useState(0);
-  const [repeat, setRepeat] = useState(0);
+  console.log(currentTime);
 
-  const [isPlaying, setIsPlaying] = useState(false);
   const [isSelected, setIsSelected] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
   const song = useRef();
-
-  useEffect(() => {
-    if (isPlaying) {
-      song.current.play();
-    } else {
-      song.current.pause();
-    }
-  }, [isPlaying]);
 
   const changeParameters = () => {
     if (!isSelected) {
       setCurrentTime((song.current.currentTime * 100) / song.current.duration);
     }
     if (currentTime >= 99.8) {
-      if (repeat == 2) {
-        setRepeat(0);
+      if (repeat == -1) {
+        dispatch(setRepeat(0));
       }
     }
   };
+
   useEffect(() => {
     if (repeat != 0) {
       song.current.loop = true;
@@ -53,46 +54,33 @@ const PlayerControls = () => {
     song.current.volume = volume;
   }, [volume]);
 
-  const convertTime = (time) => {
-    let minutes = Math.floor(time / 60);
-    let seconds = Math.floor(time % 60);
-    if (minutes <= 9) {
-      minutes = "0" + minutes;
+  useEffect(() => {
+    if (isPlaying) {
+      song.current.play();
+    } else {
+      song.current.pause();
     }
-    if (seconds <= 9) {
-      seconds = "0" + seconds;
-    }
-    return `${minutes}:${seconds}`;
-  };
-  const volumeLevel = (volume) => {
-    if (volume >= 0.66) {
-      return volumeSvg.maxVolume;
-    }
-    if (volume >= 0.33) {
-      return volumeSvg.mediumVolume;
-    }
-    if (volume > 0) {
-      return volumeSvg.lowVolume;
-    }
-    return volumeSvg.noVolume;
-  };
+  }, [isPlaying]);
 
   return (
     <>
-      <Paper
+      <div
+        className="rounded-[6px]"
         style={{
           padding: "0 16px",
           height: "90px",
           width: "100%",
-          position: "fixed",
-          bottom: "0",
-          backgroundColor: "#181818",
+          backgroundColor: "#000",
           display: "flex",
         }}
-        elevation={0}
-        square
       >
-        <PlayerSongDetails />
+        {selectedSong ? (
+          <>
+            <PlayerSongDetails />
+          </>
+        ) : (
+          <div className="w-[30%]" />
+        )}
         <Paper
           style={{
             maxWidth: "722px",
@@ -131,7 +119,7 @@ const PlayerControls = () => {
                   borderRadius: "50%",
                 }}
                 onClick={() => {
-                  setIsPlaying(!isPlaying);
+                  dispatch(setIsPlaying(!isPlaying));
                 }}
               >
                 {isPlaying ? (
@@ -165,16 +153,20 @@ const PlayerControls = () => {
                     "&:hover": { backgroundColor: "#fff" },
                   }}
                   onClick={() => {
-                    if (repeat == 2) {
-                      setRepeat(0);
-                    } else {
-                      setRepeat((prev) => prev + 1);
+                    if (repeat == 0) {
+                      dispatch(setRepeat(1));
+                    }
+                    if (repeat == 1) {
+                      dispatch(setRepeat(-1));
+                    }
+                    if (repeat == -1) {
+                      dispatch(setRepeat(0));
                     }
                   }}
                 >
                   {repeat == 1 ? (
                     <RepeatRoundedIcon style={{ fill: "#1db954" }} />
-                  ) : repeat == 2 ? (
+                  ) : repeat == -1 ? (
                     <RepeatOneRoundedIcon style={{ fill: "#1db954" }} />
                   ) : (
                     <RepeatRoundedIcon />
@@ -183,10 +175,11 @@ const PlayerControls = () => {
               </div>
             </div>
             <div className="playbar__wrapper">
-              <div className="playbar__time" style={{ textAlign: "right" }}>
-                {song?.current?.duration != undefined &&
-                  convertTime(currentTime * (song.current.duration / 100))}
-              </div>
+              {song && song.current && (
+                <>
+                  <Timer time={currentTime * (song.current.duration / 100)} />
+                </>
+              )}
               <Slider
                 style={{ width: "100%", padding: "5px 0" }}
                 value={currentTime}
@@ -226,73 +219,23 @@ const PlayerControls = () => {
                   setCurrentTime(e.target.value);
                 }}
               />
-              <div className="playbar__time">
-                {song?.current?.duration != undefined &&
-                  convertTime(song.current.duration)}
-              </div>
+              {song && song.current && (
+                <>
+                  <Timer time={song.current.duration} />
+                </>
+              )}
             </div>
-            <audio src={songItem2} ref={song} onTimeUpdate={changeParameters} />
-          </div>
-        </Paper>
-        <Paper
-          style={{
-            minWidth: "180px",
-            width: "30%",
-            backgroundColor: "transparent",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "flex-end",
-          }}
-          elevation={0}
-          square
-        >
-          <div className="volume-controls">
-            <div
-              className="volume-controls__number"
-              onClick={() => {
-                setIsMuted(!isMuted);
-                if (isMuted) {
-                  song.current.volume = volume;
-                } else {
-                  song.current.volume = 0;
-                }
-              }}
-            >
-              {isMuted ? volumeLevel(0) : volumeLevel(volume)}
-            </div>
-            <Slider
-              value={isMuted ? 0 : volume * 100}
-              style={{ width: "93px", padding: "5px 0" }}
-              sx={{
-                "& .MuiSlider-track": {
-                  backgroundColor: "#fff",
-                  border: "none",
-                },
-                "&:hover .MuiSlider-track": {
-                  backgroundColor: "#1db954",
-                },
-                "	.MuiSlider-rail": {
-                  backgroundColor: "#fff",
-                },
-                "& .MuiSlider-thumb": {
-                  width: 0,
-                  height: 0,
-                  color: "#fff",
-                },
-                "&:hover .MuiSlider-thumb": {
-                  width: 12,
-                  height: 12,
-                  boxShadow: "none",
-                },
-              }}
-              onChange={(e) => {
-                setIsMuted(false);
-                setVolume(e.target.value / 100);
-              }}
+            <audio
+              src={selectedSong}
+              ref={song}
+              onTimeUpdate={changeParameters}
             />
           </div>
         </Paper>
-      </Paper>
+        <div className="w-[30%] bg-transparent flex items-center justify-end">
+          <VolumeSettings song={song} />
+        </div>
+      </div>
     </>
   );
 };

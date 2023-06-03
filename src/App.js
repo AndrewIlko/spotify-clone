@@ -1,6 +1,6 @@
 import PlayerControls from "./components/player/PlayerControls";
 import { Provider } from "react-redux";
-import store from "./store/store";
+import store from "./redux/store/store";
 import Hero from "./components/Hero";
 import "./styles/dist/style.css";
 import { Route, Routes } from "react-router-dom";
@@ -13,8 +13,8 @@ const App = () => {
     <>
       <Provider store={store}>
         <MainWrapper>
-          <div className="flex flex-col gap-[8px]">
-            <div className="flex-1 grid grid-auto-1fr gap-[8px] p-[8px]">
+          <div className="flex flex-1 flex-col gap-[8px] p-[8px]">
+            <div className="flex-1 grid grid-auto-1fr gap-[8px]">
               <SideNavigation />
               <Routes>
                 <Route path="/" element={<Home />} />

@@ -1,5 +1,11 @@
+import MainSectionWrapper from "../../Wrappers/MainSectionWrapper";
+
 const Home = () => {
-  return <></>;
+  return (
+    <>
+      <MainSectionWrapper></MainSectionWrapper>
+    </>
+  );
 };
 
 export default Home;
